@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
+""""
+Copyright 2020 Carles Garcia Cabot (github.com/carles-garcia/encrypt-and-zip)
+Released under the GNU GPLv3 (see LICENSE)
+"""""
 import argparse
 import pathlib
 import subprocess
 
-from useful_utils.utils import *
+from _utils.utils import *
 
 
 def parse_arguments():
