@@ -13,7 +13,7 @@ f_dir3 = ["c1"]
 @pytest.fixture(autouse=True)
 def files():
     """
-    Create and yield tmp dir with some files.
+    Create and yield dict with a list of files for each dir
     """
     old_cwd = os.getcwd()
     root = tempfile.mkdtemp()
@@ -53,29 +53,27 @@ def files():
 
 
 def assert_files_changes(all_files):
+    """
+    assert the content of the directories is as expected
+    assert that the content of the files is as expected
+    """
     assert set(os.listdir(".")) == set(all_files["f_root"])
     assert set(os.listdir("dir1")) == set(all_files["f_dir1"])
     assert set(os.listdir("dir2")) == set(all_files["f_dir2"])
     assert set(os.listdir("dir2/dir3")) == set(all_files["f_dir3"])
 
     for f in f_root:
-        if f.startswith("dir"):
-            pass
-        else:
+        if not f.startswith("dir"):
             with open(f, "r") as f_:
                 assert f_.read() == f
     for f in f_dir2:
         full_f = "dir2/" + f
-        if f.startswith("dir"):
-            pass
-        else:
+        if not f.startswith("dir"):
             with open(full_f, "r") as f_:
                 assert f_.read() == f
     for f in f_dir3:
         full_f = "dir2/dir3/" + f
-        if f.startswith("dir"):
-            pass
-        else:
+        if not f.startswith("dir"):
             print(full_f)
             with open(full_f, "r") as f_:
                 assert f_.read() == f
