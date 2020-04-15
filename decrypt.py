@@ -35,8 +35,16 @@ def _parse_arguments(input_file, output_file=""):
             fail("Cannot deduct output file from input file.")
     if os.path.exists(output_file):
         fail(f"Output file '{output_file}' already exists")
+    if not os.path.exists(input_file):
+        fail(f"Input file '{input_file}' does not exist")
+    elif os.path.isdir(input_file):
+        fail(f"Input file '{input_file}' is a directory")
 
     return input_file, output_file
+
+
+def _decrypt(gpg_command):
+    subprocess.run(gpg_command, check=True)
 
 
 def _main(input_file, output_file):
@@ -51,7 +59,7 @@ def _main(input_file, output_file):
     gpg_command = ["gpg", "--decrypt", "--output", tmp_file, input_file]
     info(f"Decrypting... ({tmp_file})")
     try:
-        subprocess.run(gpg_command, check=True)
+        _decrypt(gpg_command)
     except subprocess.CalledProcessError as ex:
         fail("Decryption failed", ex)
 

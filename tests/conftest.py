@@ -4,38 +4,78 @@ import tempfile
 
 import pytest
 
+f_root = ["file1", "file2", "file3", "dir1", "dir2"]
+f_dir1 = []
+f_dir2 = ["b1", "b2", "dir3"]
+f_dir3 = ["c1"]
 
-@pytest.fixture
+
+@pytest.fixture(autouse=True)
 def files():
     """
     Create and yield tmp dir with some files.
-    After yield, check that the dir contains the files (and some extra if
-     a test added them in files_in_dir) and that the original files haven't changed.
     """
-    files_in_dir = ["file1", "file2", "dir1"]
-    files_in_subdir = ["file1", "file2"]
     old_cwd = os.getcwd()
-    newpath = tempfile.mkdtemp()
-    os.chdir(newpath)
-    for fname in files_in_dir:
-        if fname.startswith("file"):
-            with open(fname, "w") as file:
-                file.write(fname)
-        else:
-            os.mkdir(fname)
-            for subfname in files_in_subdir:
-                subpath = fname + "/" + subfname
-                with open(subpath, "w") as file:
-                    file.write(subfname)
-    original_files = list(files_in_dir)
-    yield files_in_dir
-    assert set(os.listdir(newpath)) == set(files_in_dir)
-    for fname in original_files:
-        if fname.startswith("file"):
-            with open(fname, "r") as file:
-                assert file.read() == fname
-        else:
-            assert set(os.listdir(fname)) == set(files_in_subdir)
-    os.chdir(old_cwd)
-    shutil.rmtree(newpath)
+    root = tempfile.mkdtemp()
+    os.chdir(root)
 
+    for f in f_root:
+        if f.startswith("dir"):
+            os.mkdir(f)
+        else:
+            with open(f, "w") as f_:
+                f_.write(f)
+    for f in f_dir2:
+        full_f = "dir2/" + f
+        if f.startswith("dir"):
+            os.mkdir(full_f)
+        else:
+            with open(full_f, "w") as f_:
+                f_.write(f)
+    for f in f_dir3:
+        full_f = "dir2/dir3/" + f
+        if f.startswith("dir"):
+            os.mkdir(full_f)
+        else:
+            with open(full_f, "w") as f_:
+                f_.write(f)
+
+    all_files = {
+        "f_root": list(f_root),
+        "f_dir1": list(f_dir1),
+        "f_dir2": list(f_dir2),
+        "f_dir3": list(f_dir3),
+    }
+    yield all_files
+
+    os.chdir(old_cwd)
+    shutil.rmtree(root)
+
+
+def assert_files_changes(all_files):
+    assert set(os.listdir(".")) == set(all_files["f_root"])
+    assert set(os.listdir("dir1")) == set(all_files["f_dir1"])
+    assert set(os.listdir("dir2")) == set(all_files["f_dir2"])
+    assert set(os.listdir("dir2/dir3")) == set(all_files["f_dir3"])
+
+    for f in f_root:
+        if f.startswith("dir"):
+            pass
+        else:
+            with open(f, "r") as f_:
+                assert f_.read() == f
+    for f in f_dir2:
+        full_f = "dir2/" + f
+        if f.startswith("dir"):
+            pass
+        else:
+            with open(full_f, "r") as f_:
+                assert f_.read() == f
+    for f in f_dir3:
+        full_f = "dir2/dir3/" + f
+        if f.startswith("dir"):
+            pass
+        else:
+            print(full_f)
+            with open(full_f, "r") as f_:
+                assert f_.read() == f
