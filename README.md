@@ -21,7 +21,7 @@ The scripts are:
 - `compress.py`: 
     - compresses a file with tar or zip
     - the extension of the output file indicates the compression algorithm
-    - supports: `"zip","tar", "tar.gz", "tgz", "tar.xz", "txz", "tar.bz2", "tbz"`
+    - supports: `"zip", "tar", "tar.gz", "tgz", "tar.xz", "txz", "tar.bz2", "tbz"`
     - "tgz" (tar and gzip) is used by default if the output file is not specified
 - `extract.py`: 
     - extracts a compressed file with tar or unzip
@@ -47,11 +47,11 @@ decrypt.py photos_folder.gpg
 
 compress.py photos_folder/
 compress.py asdf_folder secret.zip
-compress.py big_file smaller_file.xz
+compress.py big_file smaller_file.txz
 
 extract photos_folder.tgz
 extract secret.zip
-extract file.gz
+extract file.tar.xz
 ```
 That's how simple they are.
 
