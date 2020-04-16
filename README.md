@@ -63,7 +63,7 @@ You can run them with `source runtest.sh` (requires pytest in a virtual env)
 
 ## Contribute
 
-Feel free to contribute. Some enhancements are describes in the issues tab.
+Feel free to contribute. Some enhancements are described in the issues tab.
 
 ## License
 
