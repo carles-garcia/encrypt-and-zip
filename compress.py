@@ -2,32 +2,28 @@
 """"
 Copyright 2020 Carles Garcia Cabot (github.com/carles-garcia/encrypt-and-zip)
 Released under the GNU GPLv3 (see LICENSE)
-"""""
+""" ""
 import argparse
 import subprocess
 
 from _utils.utils import *
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input_file")
-    parser.add_argument("output_file", nargs="?", default="")
-    args = parser.parse_args()
-
-    input_file = args.input_file.rstrip("/")
-    output_file = args.output_file.rstrip("/")
+def _parse_arguments(input_file, output_file=""):
+    input_file = input_file.rstrip("/")
+    output_file = output_file
 
     if not output_file:
         output_file = input_file + ".tgz"
     if os.path.exists(output_file):
         fail(f"Output file '{output_file}' already exists")
+    if not os.path.exists(input_file):
+        fail(f"Input file '{input_file}' does not exist")
+
     return input_file, output_file
 
 
-def main():
-    input_file, output_file = parse_arguments()
-
+def _main(input_file, output_file):
     output_extension = output_file.split(".")[-1]
     if output_extension == "zip":
         check_requirements("zip")
@@ -65,8 +61,24 @@ def main():
     ok("Compression succeeded")
 
 
-if __name__ == "__main__":
+def run(input_file, output_file=""):
+    """
+    Starting point.
+    Raises SystemExit if Exception is caught
+    """
     try:
-        main()
+        input_file, output_file = _parse_arguments(input_file, output_file)
+        _main(input_file, output_file)
     except Exception as ex:
         fail("Unexpected error", ex)
+
+
+if __name__ == "__main__":
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("input_file")
+        parser.add_argument("output_file", nargs="?", default="")
+        args = parser.parse_args()
+        run(args.input_file, args.output_file)
+    except Exception as ex:
+        fail(f"Unexpected error", ex)

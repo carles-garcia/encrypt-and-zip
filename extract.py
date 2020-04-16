@@ -2,7 +2,7 @@
 """"
 Copyright 2020 Carles Garcia Cabot (github.com/carles-garcia/encrypt-and-zip)
 Released under the GNU GPLv3 (see LICENSE)
-"""""
+""" ""
 import argparse
 import pathlib
 import subprocess
@@ -10,39 +10,35 @@ import subprocess
 from _utils.utils import *
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("input_file")
-    parser.add_argument("output_file", nargs="?", default="")
-    args = parser.parse_args()
-
-    input_file = args.input_file.rstrip("/")
-    output_file = args.output_file.rstrip("/")
+def _parse_arguments(input_file, output_file=""):
+    input_file = input_file.rstrip("/")
+    output_file = output_file.rstrip("/")
 
     if not output_file:
-        extension = input_file.split(".")[-1]
-        if extension in TAR_EXTENSIONS:
-            output_file = input_file[: -(len(extension) + 1)]
-            if not output_file:
-                fail("Can't deduct output file from input file. Specify an output file")
+        if input_file.endswith(".zip"):
+            output_file = input_file[: -len(".zip")]
+        else:
+            for extension in TAR_EXTENSIONS:
+                if input_file.endswith("." + extension):
+                    output_file = input_file[: -(len(extension) + 1)]
+        if not output_file:
+            fail("Can't deduct output file from input file. Specify an output file")
     if os.path.exists(output_file):
         fail(f"Output file '{output_file}' already exists")
+    if not os.path.exists(input_file):
+        fail(f"Input file '{input_file}' does not exist")
 
     return input_file, output_file
 
 
-def main():
+def _main(input_file, output_file):
     """
-    - Parse arguments:
-        - Input file: must be file
-        - Output file: optional
     - Extract in a tmp dir
     - List tmp:
         - If multiple files, rename tmp dir to output file
         - If one file, rename this file to output file and remove tmp dir
 
     """
-    input_file, output_file = parse_arguments()
 
     tmp_dir = get_unique_tmpfile(output_file, ".extracted")
     try:
@@ -55,7 +51,7 @@ def main():
     else:
         check_requirements("tar")
         command = ["tar", "--extract", "--file", input_file, "-C", tmp_dir]
-    info(f"Extracting file... {tmp_dir}")
+    info(f"Extracting file...: {tmp_dir}")
     try:
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as ex:
@@ -68,7 +64,7 @@ def main():
     rm_tmp_dir = True
     if len(extracted_file_list) > 1:
         try:
-            if os.path.isfile(output_file):
+            if os.path.exists(output_file):
                 raise OSError(f"Output file '{output_file}' already exists")
             os.rename(tmp_dir, output_file)
             rm_tmp_dir = False
@@ -77,11 +73,11 @@ def main():
                 f"Failed to rename extracted file. The file has been extracted in '{tmp_dir}'",
                 error,
             )
-        ok(f"Extraction succeeded {output_file}")
+        ok(f"Extraction succeeded: {output_file}")
     elif len(extracted_file_list) == 1:
         tmp_path = pathlib.Path(tmp_dir) / extracted_file_list[0]
         try:
-            if os.path.isfile(output_file):
+            if os.path.exists(output_file):
                 raise OSError(f"Output file '{output_file}' already exists")
             os.rename(tmp_path, output_file)
         except OSError as error:
@@ -100,8 +96,21 @@ def main():
             fail(f"Failed to remove temporary directory '{tmp_dir}''", error)
 
 
-if __name__ == "__main__":
+def run(input_file, output_file=""):
+    """
+    Starting point.
+    Raises SystemExit if Exception is caught
+    """
     try:
-        main()
+        input_file, output_file = _parse_arguments(input_file, output_file)
+        _main(input_file, output_file)
     except Exception as ex:
         fail("Unexpected error", ex)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file")
+    parser.add_argument("output_file", nargs="?", default="")
+    args = parser.parse_args()
+    run(args.input_file, args.output_file)

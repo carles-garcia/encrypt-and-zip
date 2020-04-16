@@ -73,7 +73,6 @@ def test_parse_ok(files):
 def test_main(files):
     encrypt.run("file1")
     decrypt._main("file1.gpg", "file1decrypted")
-    files["f_root"].append("file1decrypted")
     with open("file1", "r") as f1, open("file1decrypted", "r") as f2:
         assert f1.read() == f2.read()
     files["f_root"].append("file1.gpg")

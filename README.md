@@ -5,7 +5,7 @@ Tools like gpg, tar and zip have many different options.
 
 You just want to use them without having to worry that you may delete something or having to read the man pages every time.
 
-The scripts I've written ensure that *data is never overwritten* and have only 2 options: 
+The scripts I've written ensure that **data is never overwritten** and have only 2 options: 
 - Input file 
 - Output file (optional, as it is deducted if possible. If it exists, the scripts stop).
 
@@ -56,7 +56,7 @@ That's how simple they are.
 
 ## Tests
 The test suites verify that the scripts work as expected (e.g. without overwriting any data).
-You can run them with `source runtest.sh` (requires pytest)
+You can run them with `source runtest.sh` (requires pytest in a virtual env)
 
 
 ## License
