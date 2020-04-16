@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-
+import subprocess
 import pytest
 
 f_root = ["file1", "file2", "file3", "dir1", "dir2"]
@@ -77,3 +77,11 @@ def assert_files_changes(all_files):
             print(full_f)
             with open(full_f, "r") as f_:
                 assert f_.read() == f
+
+
+def assert_file_type(file, type):
+    file_command = ["file", file]
+    file_subprocess = subprocess.run(
+            file_command, stdout=subprocess.PIPE, universal_newlines=True, check=True
+    )
+    assert type in file_subprocess.stdout

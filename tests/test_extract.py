@@ -80,6 +80,81 @@ def test_main_dir_different_path(files):
     assert_files_changes(files)
 
 
+def test_main_compression_formats(files):
+    compress._main("file1", "file1.tar")
+    extract._main("file1.tar", "a1")
+    with open("file1", "r") as f1, open("a1", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.tar.gz")
+    extract._main("file1.tar.gz", "a2")
+    with open("file1", "r") as f1, open("a2", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.tgz")
+    extract._main("file1.tgz", "a3")
+    with open("file1", "r") as f1, open("a3", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.tar.xz")
+    extract._main("file1.tar.xz", "a4")
+    with open("file1", "r") as f1, open("a4", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.txz")
+    extract._main("file1.txz", "a41")
+    with open("file1", "r") as f1, open("a41", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.tar.bz2")
+    extract._main("file1.tar.bz2", "a5")
+    with open("file1", "r") as f1, open("a5", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.tbz")
+    extract._main("file1.txz", "a51")
+    with open("file1", "r") as f1, open("a51", "r") as f2:
+        assert f1.read() == f2.read()
+
+    compress._main("file1", "file1.zip")
+    extract._main("file1.zip", "a6")
+    with open("file1", "r") as f1, open("a6", "r") as f2:
+        assert f1.read() == f2.read()
+
+
+def test_main_compression_formats_dirs(files):
+    compress._main("dir2", "file1.tar")
+    extract._main("file1.tar", "a1")
+    assert os.listdir("dir2") == os.listdir("a1")
+
+    compress._main("dir2", "file1.tar.gz")
+    extract._main("file1.tar.gz", "a2")
+    assert os.listdir("dir2") == os.listdir("a2")
+
+    compress._main("dir2", "file1.tgz")
+    extract._main("file1.tgz", "a3")
+    assert os.listdir("dir2") == os.listdir("a3")
+
+    compress._main("dir2", "file1.tar.xz")
+    extract._main("file1.tar.xz", "a4")
+    assert os.listdir("dir2") == os.listdir("a4")
+
+    compress._main("dir2", "file1.txz")
+    extract._main("file1.txz", "a41")
+    assert os.listdir("dir2") == os.listdir("a41")
+
+    compress._main("dir2", "file1.tar.bz2")
+    extract._main("file1.tar.bz2", "a5")
+    assert os.listdir("dir2") == os.listdir("a5")
+
+    compress._main("dir2", "file1.tbz")
+    extract._main("file1.txz", "a51")
+    assert os.listdir("dir2") == os.listdir("a51")
+
+    compress._main("dir2", "file1.zip")
+    extract._main("file1.zip", "a6")
+    assert os.listdir("dir2") == os.listdir("a6")
+
 def test_run(files):
     file = "file1"
     mock_parent = Mock()

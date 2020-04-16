@@ -5,7 +5,7 @@ import pytest
 
 import encrypt
 from encrypt import _main, _parse_arguments
-from tests.conftest import assert_files_changes
+from tests.conftest import assert_files_changes, assert_file_type
 
 
 def _encrypt_with_password(gpg_command):
@@ -50,6 +50,7 @@ def test_main(files):
     _main("file1", "file1.gpg")
     files["f_root"].append("file1.gpg")
     assert_files_changes(files)
+    assert_file_type("file1.gpg", "GPG symmetrically encrypted data")
 
 
 def test_main_different_path(files):
@@ -62,6 +63,8 @@ def test_main_dir(files):
     _main("dir2", "dir2.gpg")
     files["f_root"].append("dir2.gpg")
     assert_files_changes(files)
+    assert_file_type("dir2.gpg", "GPG symmetrically encrypted data")
+
 
 
 def test_main_dir_different_path(files):

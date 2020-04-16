@@ -24,22 +24,15 @@ def _parse_arguments(input_file, output_file=""):
 
 
 def _main(input_file, output_file):
-    output_extension = output_file.split(".")[-1]
-    if output_extension == "zip":
+    if output_file.endswith(".zip"):
         check_requirements("zip")
         command = ["zip", "-q", "--recurse-paths", output_file, input_file]
+
     else:
-        check_requirements("tar")
-        if output_extension in [
-            "tar",
-            "tar.gz",
-            "tgz",
-            "tar.xz",
-            "txz",
-            "tar.bz2",
-            "tbz",
-        ]:
-            compression_option = "--auto-compress"
+        for extension in TAR_EXTENSIONS:
+            if output_file.endswith("." + extension):
+                compression_option = "--auto-compress"
+                break
         else:
             compression_option = "--gzip"
         command = [
