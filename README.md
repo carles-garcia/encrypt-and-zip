@@ -61,6 +61,9 @@ That's how simple they are.
 The test suites verify that the scripts work as expected (e.g. without overwriting any data).
 You can run them with `source runtest.sh` (requires pytest in a virtual env)
 
+## Contribute
+
+Feel free to contribute. Some enhancements are describes in the issues tab.
 
 ## License
 
