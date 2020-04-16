@@ -1,4 +1,6 @@
 # encrypt-and-zip
+[Download v1.0](https://github.com/carles-garcia/encrypt-and-zip/releases/tag/v1.0)
+
 Python 3.7+ scripts to safely and easily encrypt, decrypt, compress and extract files.
 
 Tools like gpg, tar and zip have many different options.
