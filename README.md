@@ -14,6 +14,7 @@ The scripts are:
     - calls gpg to encrypt symmetrically a file
     - can encrypt a directory (standalone gpg can't)
     - gpg prompts for passphrase
+    - the encryption algorithm is the default in your gpg version (probably AES-256, [CFB mode](https://tools.ietf.org/html/rfc4880#section-13.9))
 - `decrypt.py`: 
     - calls gpg to decrypt a gpg symmetrically encrypted file 
     - can decrypt files whether they were encrypted by the previous script or standalone gpg.

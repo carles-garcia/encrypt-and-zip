@@ -85,7 +85,7 @@ def _main(input_file, output_file):
                 f"Failed to rename extracted file. The file has been extracted in '{tmp_dir}'",
                 error,
             )
-        ok(f"Extraction succeeded {output_file}")
+        ok(f"Extraction succeeded: {output_file}")
     else:
         warn("Compressed file was empty")
 

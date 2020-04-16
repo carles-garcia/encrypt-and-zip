@@ -122,7 +122,7 @@ def _main(input_file, output_file):
                     ex,
                 )
             else:
-                ok(f"Decryption succeeded {output_file}")
+                ok(f"Decryption succeeded: {output_file}")
             try:
                 os.rmdir(output_directory)
             except OSError as ex:
