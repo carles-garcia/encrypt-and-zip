@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     for file in scripts:
         path = target + file
-        shutil.copy(file, target)
+        shutil.copy(file, path)
         os.chmod(path, 0o755)
         print("Copied " + file + " to " + path, file=sys.stderr)
 
